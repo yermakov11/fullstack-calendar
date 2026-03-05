@@ -88,7 +88,7 @@ https://github.com/yermakov11/fullstack-calendar.git
 Go to the project folder:
 
 ```bash
-cd calendar
+cd client
 ```
 
 Install dependencies:
