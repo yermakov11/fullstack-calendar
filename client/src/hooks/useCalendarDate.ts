@@ -17,7 +17,7 @@ export type HolidayMap = Map<string, string>;
 
 const NAGER_BASE_URL = "https://date.nager.at/api/v3/PublicHolidays";
 
-export const useCalendarDate = (countryCode: string = "DE") => {
+export const useCalendarDate = (countryCode: string = "US") => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [holidays, setHolidays] = useState<HolidayMap>(new Map());
   const [loading, setLoading] = useState(false);
