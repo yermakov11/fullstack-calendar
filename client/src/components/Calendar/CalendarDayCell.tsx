@@ -13,10 +13,11 @@ interface PropsCalendarDayCell {
   onClickEvent: (event: Event) => void;
   onDrop: (date: Date, e: React.DragEvent<HTMLDivElement>) => void;
   onDragOverEvent: (targetId: string, targetDate: Date, e: React.DragEvent<HTMLDivElement>) => void;
+  onSeeMore: (events: Event[], date: Date) => void;
   addEvent: (date: Date) => void;
 }
 
-export const CalendarDayCell = ({ currentDate, day, holidays, events, onDragStart, onClickEvent, onDrop, onDragOverEvent, addEvent }: PropsCalendarDayCell) => {
+export const CalendarDayCell = ({ currentDate, day, holidays, events, onDragStart, onClickEvent, onDrop, onDragOverEvent, onSeeMore, addEvent }: PropsCalendarDayCell) => {
   const dateObj = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
   const holidayName = holidays.get(dateObj.toDateString());
   const isToday = dateObj.toDateString() === new Date().toDateString();
@@ -32,8 +33,8 @@ export const CalendarDayCell = ({ currentDate, day, holidays, events, onDragStar
       onDragOver={(e) => e.preventDefault()}
       onDrop={(e) => { justDropped.current = true; onDrop(dateObj, e); }}
     >
-      <span className={`day-number ${holidayName ? "holiday" : ""}`}>{day}</span>
       {holidayName && <HolidayLabel>{holidayName}</HolidayLabel>}
+      <span className={`day-number ${holidayName ? "holiday" : ""}`}>{day}</span>
       <EventWrapper
         events={events}
         currentDate={currentDate}
@@ -41,6 +42,7 @@ export const CalendarDayCell = ({ currentDate, day, holidays, events, onDragStar
         onDragStart={onDragStart}
         onDragOverEvent={onDragOverEvent}
         onClickEvent={onClickEvent}
+        onSeeMore={onSeeMore}
       />
     </DayContainer>
   );

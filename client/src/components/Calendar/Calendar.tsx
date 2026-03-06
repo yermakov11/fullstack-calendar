@@ -1,28 +1,37 @@
-import { Wrapper } from "../../styles/Calendar.styled";
+import { useState } from "react";
+import { Wrapper, CountrySelect } from "../../styles/Calendar.styled";
 import { CalendarSearchBar } from "./CalendarSearchBar";
 import { CalendarControls } from "./CalendarControls";
 import { CalendarHeadings } from "./CalendarHeadings";
 import { CalendarDaysGrid } from "./CalendarDaysGrid";
 import { Portal } from "./Portal";
+import { DayEventsPortal } from "./DayEventPortal";
 import { useCalendarDate } from "../../hooks/useCalendarDate";
 import { useEvents } from "../../hooks/useEvents";
+import { useSeeMore } from "../../hooks/useSeeMore";
 import { useDragAndDrop } from "../../hooks/useDragAndDrop";
 import { usePortal } from "../../hooks/usePortal";
 
-interface PropsCalendar {
-  countryCode?: string;
-}
 
-export const Calendar = ({ countryCode = "US" }: PropsCalendar) => {
-  const { currentDate, setCurrentDate, holidays } = useCalendarDate(countryCode);
-  const { filteredEvents, searchText, setSearchText, addEvent, updateEventDate, updateEventTitle, deleteEvent, reorderEvents} = useEvents();
+export const Calendar = () => {
+  const [countryCode, setCountryCode] = useState("US");
+  const { currentDate, setCurrentDate, holidays, availableCountries } = useCalendarDate(countryCode);
+  const { filteredEvents, searchText, setSearchText, addEvent, updateEventDate, updateEventTitle, deleteEvent, reorderEvents } = useEvents();
   const { onDragStart, onDrop, onDragOverEvent } = useDragAndDrop(updateEventDate, reorderEvents);
   const { portalData, showPortal, openPortal, closePortal, editEvent, handleDelete } = usePortal(updateEventTitle, deleteEvent);
+  const { seeMoreEvents, seeMoreDate, isOpen, openSeeMore, closeSeeMore } = useSeeMore();
 
   return (
     <Wrapper>
-      <CalendarSearchBar searchText={searchText} setSearchText={setSearchText}/>
-      <CalendarControls currentDate={currentDate} setCurrentDate={setCurrentDate}/>
+      <CalendarSearchBar searchText={searchText} setSearchText={setSearchText} />
+      <CountrySelect value={countryCode} onChange={(e) => setCountryCode(e.target.value)}>
+        {availableCountries.map(c => (
+          <option key={c.countryCode} value={c.countryCode}>
+            {c.name}
+          </option>
+        ))}
+      </CountrySelect>
+      <CalendarControls currentDate={currentDate} setCurrentDate={setCurrentDate} />
       <CalendarHeadings />
       <CalendarDaysGrid
         currentDate={currentDate}
@@ -33,6 +42,7 @@ export const Calendar = ({ countryCode = "US" }: PropsCalendar) => {
         onDrop={onDrop}
         onDragOverEvent={onDragOverEvent}
         addEvent={addEvent}
+        onSeeMore={openSeeMore}
       />
 
       {showPortal && portalData && (
@@ -42,6 +52,15 @@ export const Calendar = ({ countryCode = "US" }: PropsCalendar) => {
           handleDelete={handleDelete}
           handleClose={closePortal}
           handleEdit={editEvent}
+        />
+      )}
+
+      {isOpen && seeMoreDate && (
+        <DayEventsPortal
+          date={seeMoreDate}
+          events={seeMoreEvents}
+          onClose={closeSeeMore}
+          onClickEvent={(ev) => { closeSeeMore(); openPortal(ev); }}
         />
       )}
     </Wrapper>

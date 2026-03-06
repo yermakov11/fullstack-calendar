@@ -1,10 +1,12 @@
+import { SearchInput } from "../../styles/Calendar.styled";
+
 interface PropsSearch {
   searchText: string;
   setSearchText: (text: string) => void;
 }
 
 export const CalendarSearchBar = ({ searchText, setSearchText }: PropsSearch) => (
-  <input
+  <SearchInput
     type="text"
     value={searchText}
     placeholder="Search event..."

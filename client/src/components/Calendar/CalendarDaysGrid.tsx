@@ -13,10 +13,11 @@ interface PropsCalendarDaysGrid {
   onClickEvent: (event: Event) => void;
   onDrop: (date: Date, e: React.DragEvent<HTMLDivElement>) => void;
   onDragOverEvent: (targetId: string, targetDate: Date, e: React.DragEvent<HTMLDivElement>) => void;
+  onSeeMore: (events: Event[], date: Date) => void;
   addEvent: (date: Date) => void;
 }
 
-export const CalendarDaysGrid = ({ currentDate, holidays, events, onDragStart, onDrop, onDragOverEvent, onClickEvent, addEvent }: PropsCalendarDaysGrid) => {
+export const CalendarDaysGrid = ({ currentDate, holidays, events, onDragStart, onDrop, onDragOverEvent, onClickEvent, onSeeMore, addEvent }: PropsCalendarDaysGrid) => {
   const days = getSortedDays(currentDate);
   const is28Days = getDaysInMonth(currentDate) === 28;
 
@@ -33,8 +34,8 @@ export const CalendarDaysGrid = ({ currentDate, holidays, events, onDragStart, o
           onDrop={onDrop}
           onDragOverEvent={onDragOverEvent}
           onClickEvent={onClickEvent}
-          addEvent={addEvent}
-        />
+          onSeeMore={onSeeMore}
+          addEvent={addEvent} />
       ))}
     </SevenColGrid>
   );

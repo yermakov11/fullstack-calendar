@@ -63,6 +63,14 @@ export const getDarkColor = (): string => {
 
 export const getSortedDays = (date: Date): number[] => {
   const daysInMonth = range(getDaysInMonth(date));
-  const index = new Date(date.getFullYear(), date.getMonth(),1).getDay();
+  const index = new Date(date.getFullYear(), date.getMonth(), 1).getDay();
   return [...Array(index === 0 ? 6 : index - 1), ...daysInMonth];
+};
+
+export const truncateChars = (text: string, maxChars: number) => {
+  if (text.length <= maxChars) {
+    return text;
+  } else {
+    return text.slice(0, maxChars).trim() + "...";
+  }
 };

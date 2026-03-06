@@ -13,22 +13,43 @@ interface NagerHoliday {
   types: string[];
 }
 
+export interface AvailableCountry {
+  countryCode: string;
+  name: string;
+}
+
 export type HolidayMap = Map<string, string>;
 
-const NAGER_BASE_URL = "https://date.nager.at/api/v3/PublicHolidays";
+
+const NAGER_BASE_URL = import.meta.env.VITE_NAGER_BASE_URL;
 
 export const useCalendarDate = (countryCode: string = "US") => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [holidays, setHolidays] = useState<HolidayMap>(new Map());
+  const [availableCountries, setAvailableCountries] = useState<AvailableCountry[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+
+
+  useEffect(() => {
+    const fetchCountries = async () => {
+      try {
+        const response = await axios.get<AvailableCountry[]>(`${NAGER_BASE_URL}/AvailableCountries`);
+        setAvailableCountries(response.data.sort((a, b) => a.name.localeCompare(b.name)));
+      } catch (err) {
+        console.error("Failed to fetch countries:", err);
+      }
+    };
+
+    fetchCountries();
+  }, []);
 
   useEffect(() => {
     const fetchHolidays = async () => {
       setLoading(true);
       setError(null);
       try {
-        const url = `${NAGER_BASE_URL}/${currentDate.getFullYear()}/${countryCode}`;
+        const url = `${NAGER_BASE_URL}/PublicHolidays/${currentDate.getFullYear()}/${countryCode}`;
         const response = await axios.get<NagerHoliday[]>(url);
         const map: HolidayMap = new Map(
           response.data.map((h) => [
@@ -49,5 +70,5 @@ export const useCalendarDate = (countryCode: string = "US") => {
     fetchHolidays();
   }, [currentDate, countryCode]);
 
-  return { currentDate, setCurrentDate, holidays, loading, error };
+  return { currentDate, setCurrentDate, holidays, availableCountries, loading, error };
 };
