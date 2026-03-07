@@ -1,15 +1,20 @@
-import { useState, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import type { Event } from "../types/types";
-import { MOCKAPPS } from "../data/data_time";
+import { MOCKAPPS } from "../types/types";
 import { getDarkColor } from "../utils/dateUtils";
+import { saveEvents, loadEvents } from "../utils/localStorage";
 
 export const useEvents = () => {
   const [events, setEvents] = useState<Event[]>(
-    () => MOCKAPPS.map(ev => ({ ...ev, id: crypto.randomUUID() }))
+    () => loadEvents(MOCKAPPS.map(ev => ({ ...ev, id: crypto.randomUUID() })))
   );
-
+  
   const [searchText, setSearchText] = useState("");
 
+  useEffect(() => {
+    saveEvents(events);
+  }, [events]);
+  
   const filteredEvents = useMemo(() => {
     return events.filter(ev => ev.title.toLowerCase().includes(searchText.toLowerCase()));
   }, [events, searchText]);

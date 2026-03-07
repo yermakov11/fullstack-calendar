@@ -1,29 +1,11 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import { fetchHolidays, fetchCountries } from "../data/data_time";
+import type { AvailableCountry, NagerHoliday } from "../types/types";
 
-interface NagerHoliday {
-  date: string;
-  localName: string;
-  name: string;
-  countryCode: string;
-  fixed: boolean;
-  global: boolean;
-  counties: string[] | null;
-  launchYear: number | null;
-  types: string[];
-}
-
-export interface AvailableCountry {
-  countryCode: string;
-  name: string;
-}
 
 export type HolidayMap = Map<string, string>;
 
-
-const NAGER_BASE_URL = import.meta.env.VITE_NAGER_BASE_URL;
-
-export const useCalendarDate = (countryCode: string = "US") => {
+export const useCalendarDate = (countryCode: string = "") => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [holidays, setHolidays] = useState<HolidayMap>(new Map());
   const [availableCountries, setAvailableCountries] = useState<AvailableCountry[]>([]);
@@ -32,43 +14,31 @@ export const useCalendarDate = (countryCode: string = "US") => {
 
 
   useEffect(() => {
-    const fetchCountries = async () => {
-      try {
-        const response = await axios.get<AvailableCountry[]>(`${NAGER_BASE_URL}/AvailableCountries`);
-        setAvailableCountries(response.data.sort((a, b) => a.name.localeCompare(b.name)));
-      } catch (err) {
-        console.error("Failed to fetch countries:", err);
-      }
-    };
-
-    fetchCountries();
-  }, []);
+    const loadCountries = async () => {
+      const data = await fetchCountries();
+      setAvailableCountries(data.sort((a, b) => a.name.localeCompare(b.name)))
+    }
+    loadCountries()
+  }, [])
 
   useEffect(() => {
-    const fetchHolidays = async () => {
+    const loadHolidays = async () =>{
       setLoading(true);
       setError(null);
       try {
-        const url = `${NAGER_BASE_URL}/PublicHolidays/${currentDate.getFullYear()}/${countryCode}`;
-        const response = await axios.get<NagerHoliday[]>(url);
-        const map: HolidayMap = new Map(
-          response.data.map((h) => [
-            new Date(h.date).toDateString(),
-            h.localName,
-          ])
-        );
+        const data: NagerHoliday[] = await fetchHolidays(currentDate, countryCode);
+        const map: HolidayMap = new Map (data.map((h) => [new Date(h.date).toDateString(), h.localName]));
         setHolidays(map);
-      } catch (err: any) {
-        setError(err);
+      } catch (error) {
+        setError(error instanceof Error ? error : new Error(String(error)));
         setHolidays(new Map());
-        console.error("Failed to fetch holidays:", err);
-      } finally {
+      } finally{
         setLoading(false);
-      }
+      } 
     };
+    loadHolidays()
+  }, [currentDate, countryCode])
 
-    fetchHolidays();
-  }, [currentDate, countryCode]);
 
   return { currentDate, setCurrentDate, holidays, availableCountries, loading, error };
 };

@@ -343,19 +343,23 @@ export const DayEventItem = styled.div<{ bgColor: string }>`
 `;
 
 
+export const ControlsRow = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin: 10px 0;
+`;
+
 export const SearchInput = styled.input`
-  display: block;
-  margin: 0 auto;
-  width: 100%;
-  max-width: 300px;
-  height: 20px;
+  width: 200px;
+  height: 36px;
   padding: 8px 12px;
   border-radius: 8px;
   border: 1px solid #dcdcdc;
   font-size: 14px;
   outline: none;
   transition: all 0.2s ease;
-  margin-top:10px
 
   &:focus {
     border-color: #6c63ff;
@@ -368,23 +372,19 @@ export const SearchInput = styled.input`
 `;
 
 export const CountrySelect = styled.select`
-  display: block;
-  margin: 0 auto;
-  width: 100%;
-  max-width: 300px;
-  height: 30px;
-  padding: 8px 12px;
+  width: 200px;
+  height: 36px;
+  padding: 0 12px;
   border-radius: 8px;
   border: 1px solid #dcdcdc;
   font-size: 12px;
   outline: none;
   transition: all 0.2s ease;
-
   cursor: pointer;
   background: white;
+
   &:focus {
     outline: none;
     border-color: #3b82f6;
   }
 `;
-

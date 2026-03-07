@@ -1,5 +1,5 @@
 import { SevenColGrid, HeadDays } from "../../styles/Calendar.styled";
-import { DAYS } from "../../data/data_time";
+import { DAYS } from "../../types/types";
 
 export const CalendarHeadings = () => (
   <SevenColGrid>
