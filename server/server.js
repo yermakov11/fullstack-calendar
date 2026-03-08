@@ -1,6 +1,6 @@
 require('dotenv').config();
 const express = require("express");
-// const cors = require("cors");
+const cors = require("cors");
 const logger = require('./middleware/logger');
 const errorHandler = require('./middleware/errorHandler');
 const notFound = require('./middleware/notFound');
@@ -9,7 +9,7 @@ const connectDB = require('./db/connection');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// app.use(cors(corsOptions));                              
+app.use(cors(corsOptions));                              
 app.use(express.json());                                 
 app.use(express.urlencoded({ extended: true }));
 app.use(logger);                                         
