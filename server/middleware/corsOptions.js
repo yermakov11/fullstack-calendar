@@ -1,6 +1,6 @@
 const allowedOrigins = [
   'http://localhost:5173',
-  'https://fullstack-calendar-chi.vercel.app',  
+  'https://fullstack-calendar-sigma.vercel.app',  
   'https://fullstack-calendar-gpio82ryc-yermakov11s-projects.vercel.app',  
 ];
   
