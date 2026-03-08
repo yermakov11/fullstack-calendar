@@ -1,7 +1,7 @@
 import axios from "axios";
 import type { Event as CalendarEvent } from "../types/types";
 
-const SERVER_URL =  import.meta.env.SERVER_URL;
+const SERVER_URL =  import.meta.env.VITE_SERVER_URL;
 
 
 export const getEvents = async (): Promise<CalendarEvent[]> => {
