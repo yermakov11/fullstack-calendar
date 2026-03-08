@@ -1,7 +1,8 @@
 const allowedOrigins = [
-    'http://localhost:5173', 
-    'http://localhost:3000',
-  ];
+  'http://localhost:5173',
+  'https://fullstack-calendar-chi.vercel.app',  
+  'https://fullstack-calendar-gpio82ryc-yermakov11s-projects.vercel.app',  
+];
   
   const corsOptions = {
     origin: (origin, callback) => {
