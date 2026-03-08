@@ -37,33 +37,59 @@ export const useEvents = () => {
   const addEvent = async (date: Date) => {
     const text = window.prompt("Event name");
     if (!text) return;
-
-    const newEvent = await server_api.createEvent({
+  
+    const tempId = `temp-${Date.now()}`;
+    const tempEvent: CalendarEvent = {
+      id: tempId,
       title: text,
       date,
       color: getDarkColor(),
-    });
-
-    setEvents(prev => [...prev, {
-      ...newEvent,
-      id: newEvent._id ?? newEvent.id,
-      date: new Date(newEvent.date),
-    }]);
+    };
+  
+    setEvents(prev => [...prev, tempEvent]);
+  
+    try {
+      const newEvent = await server_api.createEvent({
+        title: text,
+        date,
+        color: tempEvent.color,
+      });
+  
+      setEvents(prev => prev.map(ev => ev.id === tempId ? { ...newEvent, id: newEvent._id ?? newEvent.id, date: new Date(newEvent.date) }: ev));
+    } catch (err) {
+      console.error("Failed to create event:", err);
+      setEvents(prev => prev.filter(ev => ev.id !== tempId));
+    }
   };
 
   const updateEventDate = async (id: string, date: Date) => {
-    await server_api.updateEvent(id, { date });
+    const prev_date = events.find(ev => ev.id === id)?.date;
     setEvents(prev => prev.map(ev => (ev.id === id ? { ...ev, date } : ev)));
+    try {
+      await server_api.updateEvent(id, { date });
+    } catch (err) {
+      setEvents(prev => prev.map(ev => (ev.id === id ? { ...ev, date: prev_date! } : ev)));
+    }
   };
-
+  
   const updateEventTitle = async (id: string, title: string) => {
-    await server_api.updateEvent(id, { title });
+    const prev_title = events.find(ev => ev.id === id)?.title;
     setEvents(prev => prev.map(ev => (ev.id === id ? { ...ev, title } : ev)));
+    try {
+      await server_api.updateEvent(id, { title });
+    } catch (err) {
+      setEvents(prev => prev.map(ev => (ev.id === id ? { ...ev, title: prev_title! } : ev)));
+    }
   };
-
+  
   const deleteEvent = async (id: string) => {
-    await server_api.deleteEvent(id);
+    const deleted = events.find(ev => ev.id === id);
     setEvents(prev => prev.filter(ev => ev.id !== id));
+    try {
+      await server_api.deleteEvent(id);
+    } catch (err) {
+      if (deleted) setEvents(prev => [...prev, deleted]);
+    }
   };
 
   const reorderEvents = async (dragId: string, hoverId: string) => {
