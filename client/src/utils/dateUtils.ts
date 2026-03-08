@@ -21,10 +21,16 @@ export const sortDays = (date: Date): string[] => {
   return sortedDays;
 };
 
-export const datesAreOnSameDay = (first: Date, second: Date): boolean =>
-  first.getFullYear() === second.getFullYear() &&
-  first.getMonth() === second.getMonth() &&
-  first.getDate() === second.getDate();
+export const datesAreOnSameDay = (first: Date, second: Date): boolean => {
+  const a = new Date(first);   
+  const b = new Date(second);  
+
+  return (
+    a.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth() &&
+    a.getDate() === b.getDate()
+  );
+};
 
 export const getMonthYear = (date: Date): string => {
   const d = date.toDateString().split(" ");

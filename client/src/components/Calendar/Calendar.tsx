@@ -32,7 +32,7 @@ export const Calendar = () => {
         <CalendarSearchBar searchText={searchText} setSearchText={setSearchText} />
         <CountrySelect value={countryCode} onChange={(e) => handleCountryChange(e.target.value)}>
           <option value="" disabled>
-              Select country holidays...
+            Select country holidays...
           </option>
           {availableCountries.map(c => (
             <option key={c.countryCode} value={c.countryCode}>{c.name}</option>
@@ -52,7 +52,6 @@ export const Calendar = () => {
         addEvent={addEvent}
         onSeeMore={openSeeMore}
       />
-
       {showPortal && portalData && (
         <Portal
           title={portalData.title}

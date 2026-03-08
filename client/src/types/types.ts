@@ -8,10 +8,12 @@ export const MOCKAPPS = [
 ];
 
 export interface Event {
-    id: string;   
+    _id?: string;
+    id: string;
+    title: string;   
     date: Date;
-    title: string;
     color: string;
+    order?: number;
   }
 
   export interface NagerHoliday {
